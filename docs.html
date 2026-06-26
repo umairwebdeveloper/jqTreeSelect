@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WI3BIT Multi-Select Developer Documentation</title>
+
+    <!-- Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <link rel="stylesheet" href="wi3bit-multi-select.css">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --docs-primary: #0d6efd;
+            --docs-primary-dark: #0056b3;
+            --docs-bg-dark: #0f172a;
+            --docs-card-bg: #ffffff;
+            --docs-font-heading: 'Outfit', sans-serif;
+            --docs-font-body: 'Outfit', sans-serif;
+            --docs-font-code: 'Space Grotesk', monospace;
+        }
+
+        body {
+            font-family: var(--docs-font-body);
+            color: #334155;
+            background-color: #f8fafc;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--docs-font-heading);
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        /* Hero Styling */
+        .docs-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #fff;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--docs-primary);
+        }
+
+        .docs-hero::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(13, 110, 253, 0.15) 0%, transparent 70%);
+            top: -50px;
+            right: -50px;
+        }
+
+        .docs-hero h1 {
+            color: #fff;
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.05em;
+        }
+
+        .docs-hero .lead {
+            font-size: 1.25rem;
+            color: #94a3b8;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            height: calc(100vh - 4rem);
+            overflow-y: auto;
+            padding-right: 1.5rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 1rem;
+            color: #475569;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .sidebar-link i {
+            width: 20px;
+            margin-right: 10px;
+            font-size: 1.1rem;
+            color: #64748b;
+        }
+
+        .sidebar-link:hover {
+            background-color: #e2e8f0;
+            color: var(--docs-primary);
+        }
+
+        .sidebar-link.active {
+            background-color: #dbeafe;
+            color: var(--docs-primary);
+        }
+
+        .sidebar-link.active i {
+            color: var(--docs-primary);
+        }
+
+        /* Card styles */
+        .docs-card {
+            background: var(--docs-card-bg);
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .docs-section {
+            padding-top: 3.5rem;
+            margin-top: -2rem;
+        }
+
+        /* Code Copy Styling */
+        .code-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .btn-copy {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #e2e8f0;
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .btn-copy:hover {
+            background: rgba(255, 255, 255, 0.3);
+            color: #fff;
+        }
+
+        /* Configurator Styling */
+        .configurator-panel {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .preview-box {
+            background: #ffffff;
+            border: 1px dashed #94a3b8;
+            border-radius: 12px;
+            padding: 30px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 180px;
+        }
+
+        /* Custom Prism override */
+        pre[class*="language-"] {
+            margin: 0 !important;
+            border-radius: 12px;
+            font-family: var(--docs-font-code) !important;
+            font-size: 0.9rem;
+        }
+
+        code[class*="language-"] {
+            font-family: var(--docs-font-code) !important;
+        }
+
+        .anchor-link {
+            color: #cbd5e1;
+            margin-left: 8px;
+            text-decoration: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        h2:hover .anchor-link,
+        h3:hover .anchor-link {
+            opacity: 1;
+        }
+
+        .anchor-link:hover {
+            color: var(--docs-primary);
+        }
+
+        .table-docs th {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .table-docs td code {
+            font-family: var(--docs-font-code);
+            font-size: 0.85rem;
+            color: #be185d;
+            background-color: #fce7f3;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .badge-type {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 6px;
+            border-radius: 6px;
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .version-badge {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: #3b82f6;
+            font-weight: 600;
+            border: 1px solid rgba(13, 110, 253, 0.3);
+        }
+
+        /* Back to top button */
+        #btnBackToTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: none;
+            z-index: 99;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Back to top -->
+    <button type="button" class="btn btn-primary" id="btnBackToTop">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Header Hero -->
+    <div class="docs-hero">
+        <div class="container-xl">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <span class="badge version-badge px-3 py-1 rounded-pill">Version 1.2.0</span>
+                        <span class="badge bg-success px-3 py-1 rounded-pill"><i class="fa-solid fa-rocket me-1"></i>Production Ready</span>
+                    </div>
+                    <h1>WI3BIT Custom Multi-Select</h1>
+                    <p class="lead mt-2">A dynamic, high-performance JQuery plugin that transforms standard selects into tree-nesting, searchable, grouped dropdowns with checkboxes, full keyboard support, and customized styles.</p>
+                    <div class="d-flex gap-3 mt-4 flex-wrap">
+                        <a href="#quick-start" class="btn btn-primary btn-lg px-4 py-2"><i class="fa-solid fa-graduation-cap me-2"></i>Getting Started</a>
+                        <a href="#interactive-generator" class="btn btn-outline-light btn-lg px-4 py-2"><i class="fa-solid fa-sliders me-2"></i>Live Configurator</a>
+                    </div>
+                </div>
+                <div class="col-lg-4 d-none d-lg-block text-end">
+                    <i class="fa-solid fa-list-check" style="font-size: 12rem; color: rgba(255,255,255,0.05); filter: drop-shadow(0 0 15px rgba(13,110,253,0.3));"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="container-xl py-5">
+        <div class="row">
+            <!-- Navigation Sidebar -->
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="sidebar">
+                    <h6 class="text-uppercase tracking-wider font-semibold text-xs text-muted mb-3 px-3">Documentation</h6>
+                    <a href="#installation" class="sidebar-link active"><i class="fa-solid fa-download"></i>Installation</a>
+                    <a href="#quick-start" class="sidebar-link"><i class="fa-solid fa-play"></i>Quick Start</a>
+                    <a href="#interactive-generator" class="sidebar-link"><i class="fa-solid fa-sliders"></i>Interactive Configurator</a>
+                    
+                    <h6 class="text-uppercase tracking-wider font-semibold text-xs text-muted mt-4 mb-3 px-3">Reference</h6>
+                    <a href="#options-reference" class="sidebar-link"><i class="fa-solid fa-book"></i>Configuration Options</a>
+                    <a href="#data-attributes" class="sidebar-link"><i class="fa-solid fa-tags"></i>Data Attributes</a>
+                    <a href="#programmatic-data" class="sidebar-link"><i class="fa-solid fa-database"></i>Dynamic Data Source</a>
+                    <a href="#events-callbacks" class="sidebar-link"><i class="fa-solid fa-bullhorn"></i>Events &amp; Callbacks</a>
+                    <a href="#api-methods" class="sidebar-link"><i class="fa-solid fa-terminal"></i>Public API Methods</a>
+                </div>
+            </div>
+
+            <!-- Docs Content -->
+            <div class="col-lg-9 col-12">
+                
+                <!-- Installation -->
+                <section id="installation" class="docs-section mb-5">
+                    <h2 class="border-bottom pb-2 mb-3">Installation<a href="#installation" class="anchor-link">#</a></h2>
+                    <p>Load jQuery (3.x+ recommended), Bootstrap 5 (including dropdowns & tooltips bundle), and FontAwesome 6 icons. Then include the WI3BIT Multi-Select CSS and JavaScript files.</p>
+                    
+                    <h5 class="mt-4 mb-2">CSS Stylesheet</h5>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-html">&lt;!-- Bootstrap 5 CSS &amp; FontAwesome Icons --&gt;
+&lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"&gt;
+&lt;link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"&gt;
+
+&lt;!-- WI3BIT Custom Styles --&gt;
+&lt;link rel="stylesheet" href="wi3bit-multi-select.css"&gt;</code></pre>
+                    </div>
+
+                    <h5 class="mt-4 mb-2">Javascript Plugin</h5>
+                    <p>WI3BIT Multi-Select includes a UMD (Universal Module Definition) wrapper, allowing it to load cleanly in standard browsers, AMD modules, and Node/CommonJS module systems.</p>
+                    
+                    <h6 class="mt-3 mb-1 text-muted">Method A: Standard Browser Inclusion</h6>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-html">&lt;!-- JQuery 3.x &amp; Bootstrap 5 bundle (includes Tooltips and Dropdowns) --&gt;
+&lt;script src="https://code.jquery.com/jquery-3.7.1.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- WI3BIT Custom Script --&gt;
+&lt;script src="wi3bit-multi-select.js"&gt;&lt;/script&gt;</code></pre>
+                    </div>
+
+                    <h6 class="mt-3 mb-1 text-muted">Method B: Webpack / Browserify / CommonJS</h6>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-javascript">// Import jQuery and the plugin
+const $ = require('jquery');
+require('./wi3bit-multi-select.js')($); // pass jQuery context</code></pre>
+                    </div>
+
+                    <h6 class="mt-3 mb-1 text-muted">Method C: RequireJS (AMD)</h6>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-javascript">require(['jquery', 'wi3bit-multi-select'], function($) {
+    // Plugin initialized
+    $('#mySelect').wi3bitMultiSelect();
+});</code></pre>
+                    </div>
+                </section>
+
+                <!-- Quick Start -->
+                <section id="quick-start" class="docs-section mb-5">
+                    <h2 class="border-bottom pb-2 mb-3">Quick Start &amp; Auto-Init<a href="#quick-start" class="anchor-link">#</a></h2>
+                    <p>WI3BIT Multi-Select can be initialized in two different ways depending on your application needs:</p>
+                    
+                    <h4 class="mt-4 mb-2 fw-semibold">Method 1: Codeless Auto-Init (Data-API)</h4>
+                    <p>Simply add the attribute <code>data-toggle="wi3bit-multi-select"</code> to your native multi-select element. The plugin will automatically instantiate it when the document loads, reading configuration options directly from any <code>data-*</code> attributes defined on the element.</p>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-html">&lt;!-- Auto-initialized tree with search enabled, width 320px --&gt;
+&lt;select class="form-control" multiple 
+        data-toggle="wi3bit-multi-select" 
+        data-search-enabled="true"
+        data-layout-width="320px"&gt;
+    &lt;option value="1"&gt;Option A&lt;/option&gt;
+    &lt;option value="2"&gt;Option B&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                    </div>
+
+                    <h4 class="mt-4 mb-2 fw-semibold">Method 2: Programmatic JQuery Call</h4>
+                    <p>Instantiate options programmatically by calling <code>.wi3bitMultiSelect()</code> on your jQuery selectors.</p>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-html">&lt;select id="manualSelect" class="form-control" multiple&gt;
+    &lt;option value="1"&gt;Option 1&lt;/option&gt;
+    &lt;option value="2" selected&gt;Option 2&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                    </div>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-javascript">$(document).ready(function() {
+    $('#manualSelect').wi3bitMultiSelect({
+        search: {
+            enabled: true
+        },
+        actions: {
+            showSelectAll: true,
+            showClearAll: true
+        }
+    });
+});</code></pre>
+                    </div>
+                </section>
+
+                <!-- Interactive Code Generator -->
+                <section id="interactive-generator" class="docs-section mb-5">
+                    <h2 class="border-bottom pb-2 mb-3">Interactive Configurator<a href="#interactive-generator" class="anchor-link">#</a></h2>
+                    <p>Toggle and customize different options in real-time, view the rendered widget live, and copy the instantly compiled JQuery or HTML data attributes markup.</p>
+                    
+                    <div class="docs-card p-4 mt-3">
+                        <div class="row">
+                            <!-- Left Controls -->
+                            <div class="col-lg-6">
+                                <h5 class="mb-3 fw-bold"><i class="fa-solid fa-sliders me-2 text-primary"></i>1. Adjust Options</h5>
+                                <div class="configurator-panel">
+                                    
+                                    <!-- Search -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small text-uppercase text-muted m-0">Search Settings</label>
+                                        <div class="form-check form-switch mt-1">
+                                            <input class="form-check-input config-trigger" type="checkbox" id="cfgSearchEnabled" checked>
+                                            <label class="form-check-label small" for="cfgSearchEnabled">Enable Live Filtering (Search)</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Grouping -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small text-uppercase text-muted m-0">Tree Nesting</label>
+                                        <div class="form-check form-switch mt-1">
+                                            <input class="form-check-input config-trigger" type="checkbox" id="cfgGroupingNested" checked>
+                                            <label class="form-check-label small" for="cfgGroupingNested">Enable Groups &amp; Nesting</label>
+                                        </div>
+                                        <div class="form-check form-switch mt-1 ms-3" id="cfgCollapsibleWrapper">
+                                            <input class="form-check-input config-trigger" type="checkbox" id="cfgGroupingCollapsible" checked>
+                                            <label class="form-check-label small" for="cfgGroupingCollapsible">Collapsible Groups (Tree Toggle)</label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Header Buttons -->
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold small text-uppercase text-muted m-0">Header Quick Actions</label>
+                                        <div class="row mt-1">
+                                            <div class="col-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input config-trigger" type="checkbox" id="cfgActionsSelectAll" checked>
+                                                    <label class="form-check-label small" for="cfgActionsSelectAll">Select All</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input config-trigger" type="checkbox" id="cfgActionsClearAll" checked>
+                                                    <label class="form-check-label small" for="cfgActionsClearAll">Clear All</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input config-trigger" type="checkbox" id="cfgActionsReset" checked>
+                                                    <label class="form-check-label small" for="cfgActionsReset">Reset</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input config-trigger" type="checkbox" id="cfgActionsTotalCount" checked>
+                                                    <label class="form-check-label small" for="cfgActionsTotalCount">Total Options</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Dimensions -->
+                                    <div>
+                                        <label class="form-label fw-bold small text-uppercase text-muted m-0">Layout Dimensions</label>
+                                        <div class="row g-2 mt-1">
+                                            <div class="col-6">
+                                                <label class="small text-muted">Width</label>
+                                                <input type="text" class="form-control form-control-sm config-trigger" id="cfgLayoutWidth" value="100%">
+                                            </div>
+                                            <div class="col-6">
+                                                <label class="small text-muted">Dropdown Max-Height</label>
+                                                <input type="text" class="form-control form-control-sm config-trigger" id="cfgLayoutDropdownHeight" value="300px">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- Right Preview & Code -->
+                            <div class="col-lg-6 mt-4 mt-lg-0">
+                                <h5 class="mb-3 fw-bold"><i class="fa-solid fa-eye me-2 text-success"></i>2. Live Preview</h5>
+                                <div class="preview-box border-bottom-0 rounded-bottom-0">
+                                    <div class="w-100" style="max-width: 320px;">
+                                        <select id="configuratorSelect" multiple class="form-control">
+                                            <!-- Dynamically rebuilt -->
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-3 border border-dashed border-top-0 rounded-bottom-4 bg-light">
+                                    <ul class="nav nav-tabs nav-justified mb-2" id="codeTab" role="tablist">
+                                        <li class="nav-item">
+                                            <button class="nav-link active py-1 small" id="js-code-tab" data-bs-toggle="tab" data-bs-target="#js-code-panel" type="button">JS Code</button>
+                                        </li>
+                                        <li class="nav-item">
+                                            <button class="nav-link py-1 small" id="html-code-tab" data-bs-toggle="tab" data-bs-target="#html-code-panel" type="button">HTML Data Attributes</button>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="codeTabContent">
+                                        <!-- JS Tab -->
+                                        <div class="tab-pane fade show active" id="js-code-panel">
+                                            <div class="code-container m-0">
+                                                <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                                                <pre style="max-height: 150px;"><code class="language-javascript" id="genJsCode"></code></pre>
+                                            </div>
+                                        </div>
+                                        <!-- HTML Tab -->
+                                        <div class="tab-pane fade" id="html-code-panel">
+                                            <div class="code-container m-0">
+                                                <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                                                <pre style="max-height: 150px;"><code class="language-html" id="genHtmlCode"></code></pre>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Configuration Options -->
+                <section id="options-reference" class="docs-section mb-5">
+                    <h2 class="border-bottom pb-2 mb-3">Configuration Options Reference<a href="#options-reference" class="anchor-link">#</a></h2>
+                    <p>The global options schema allows full customization. Grouped into structured nested namespaces.</p>
+                    
+                    <h5 class="mt-4 mb-2"><i class="fa-solid fa-table me-2 text-primary"></i>1. Layout Settings (<code>layout</code>)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-docs">
+                            <thead>
+                                <tr>
+                                    <th>Option</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>layout.width</code></td>
+                                    <td><span class="badge-type">String</span></td>
+                                    <td><code>"100%"</code></td>
+                                    <td>Width of the dropdown wrapper (CSS syntax like <code>"300px"</code>, <code>"100%"</code>).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>layout.height</code></td>
+                                    <td><span class="badge-type">String</span></td>
+                                    <td><code>"36px"</code></td>
+                                    <td>Height of the closed display element.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>layout.dropdownHeight</code></td>
+                                    <td><span class="badge-type">String</span></td>
+                                    <td><code>"400px"</code></td>
+                                    <td>Maximum scrollable height of the dropdown items panel.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>layout.placeholder</code></td>
+                                    <td><span class="badge-type">String</span></td>
+                                    <td><code>"Select..."</code></td>
+                                    <td>Text displayed when no options are checked.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h5 class="mt-4 mb-2"><i class="fa-solid fa-table me-2 text-primary"></i>2. Header Quick Actions (<code>actions</code>)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-docs">
+                            <thead>
+                                <tr>
+                                    <th>Option</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>actions.showSelectAll</code></td>
+                                    <td><span class="badge-type">Boolean</span></td>
+                                    <td><code>true</code></td>
+                                    <td>Displays the "Select All" icon button in the header.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>actions.showClearAll</code></td>
+                                    <td><span class="badge-type">Boolean</span></td>
+                                    <td><code>true</code></td>
+                                    <td>Displays the "Clear All" icon button in the header.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>actions.showReset</code></td>
+                                    <td><span class="badge-type">Boolean</span></td>
+                                    <td><code>false</code></td>
+                                    <td>Displays the "Reset to Defaults" icon button.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>actions.showTotalCount</code></td>
+                                    <td><span class="badge-type">Boolean</span></td>
+                                    <td><code>false</code></td>
+                                    <td>Shows a badge with the total number of options.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h5 class="mt-4 mb-2"><i class="fa-solid fa-table me-2 text-primary"></i>3. Tree &amp; Nesting Settings (<code>grouping</code>)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-docs">
+                            <thead>
+                                <tr>
+                                    <th>Option</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>grouping.nested</code></td>
+                                    <td><span class="badge-type">Boolean</span></td>
+                                    <td><code>false</code></td>
+                                    <td>Set to <code>true</code> to enable infinite grouping support.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>grouping.collapsible</code></td>
+                                    <td><span class="badge-type">Boolean</span></td>
+                                    <td><code>false</code></td>
+                                    <td>If true, adds chevron toggles next to group/subgroup headers to expand/collapse.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>grouping.collapsedByDefault</code></td>
+                                    <td><span class="badge-type">Boolean</span></td>
+                                    <td><code>false</code></td>
+                                    <td>When <code>collapsible</code> is enabled, controls whether groups start collapsed.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>grouping.showExpandAll</code></td>
+                                    <td><span class="badge-type">Boolean</span></td>
+                                    <td><code>false</code></td>
+                                    <td>Displays the "Expand All" header icon.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>grouping.showCollapseAll</code></td>
+                                    <td><span class="badge-type">Boolean</span></td>
+                                    <td><code>false</code></td>
+                                    <td>Displays the "Collapse All" header icon.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h5 class="mt-4 mb-2"><i class="fa-solid fa-table me-2 text-primary"></i>4. Search Settings (<code>search</code>)</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-docs">
+                            <thead>
+                                <tr>
+                                    <th>Option</th>
+                                    <th>Type</th>
+                                    <th>Default</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>search.enabled</code></td>
+                                    <td><span class="badge-type">Boolean</span></td>
+                                    <td><code>false</code></td>
+                                    <td>Renders a dynamic live search/filter input.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>search.placeholder</code></td>
+                                    <td><span class="badge-type">String</span></td>
+                                    <td><code>"Search..."</code></td>
+                                    <td>Placeholder placeholder inside the search box.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- HTML5 Data Attributes Mapping -->
+                <section id="data-attributes" class="docs-section mb-5">
+                    <h2 class="border-bottom pb-2 mb-3">HTML5 Data Attributes Configuration<a href="#data-attributes" class="anchor-link">#</a></h2>
+                    <p>Set options directly in your markup to configure individual instances. These automatically override the global defaults.</p>
+                    
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-docs">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Data Attribute</th>
+                                    <th>Equivilant JS Property</th>
+                                    <th>Example</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>data-layout-width</code></td>
+                                    <td><code>layout.width</code></td>
+                                    <td><code>data-layout-width="350px"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>data-layout-height</code></td>
+                                    <td><code>layout.height</code></td>
+                                    <td><code>data-layout-height="40px"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>data-layout-dropdown-height</code></td>
+                                    <td><code>layout.dropdownHeight</code></td>
+                                    <td><code>data-layout-dropdown-height="250px"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>data-layout-placeholder</code></td>
+                                    <td><code>layout.placeholder</code></td>
+                                    <td><code>data-layout-placeholder="Choose category..."</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>data-actions-show-select-all</code></td>
+                                    <td><code>actions.showSelectAll</code></td>
+                                    <td><code>data-actions-show-select-all="false"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>data-actions-show-clear-all</code></td>
+                                    <td><code>actions.showClearAll</code></td>
+                                    <td><code>data-actions-show-clear-all="false"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>data-actions-show-reset</code></td>
+                                    <td><code>actions.showReset</code></td>
+                                    <td><code>data-actions-show-reset="true"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>data-grouping-nested</code></td>
+                                    <td><code>grouping.nested</code></td>
+                                    <td><code>data-grouping-nested="true"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>data-grouping-collapsible</code></td>
+                                    <td><code>grouping.collapsible</code></td>
+                                    <td><code>data-grouping-collapsible="true"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>data-search-enabled</code></td>
+                                    <td><code>search.enabled</code></td>
+                                    <td><code>data-search-enabled="true"</code></td>
+                                </tr>
+                                <tr>
+                                    <td><code>data-search-placeholder</code></td>
+                                    <td><code>search.placeholder</code></td>
+                                    <td><code>data-search-placeholder="Filter..."</code></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Dynamic Data Source -->
+                <section id="programmatic-data" class="docs-section mb-5">
+                    <h2 class="border-bottom pb-2 mb-3">Dynamic Data Source (Array Loading)<a href="#programmatic-data" class="anchor-link">#</a></h2>
+                    <p>Load and build options dynamically by passing a javascript array of objects directly in the <code>data</code> parameter.</p>
+                    
+                    <h5 class="mt-4 mb-2">1. Flat List Format</h5>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-javascript">$('#mySelect').wi3bitMultiSelect({
+    data: [
+        { value: "1", text: "Alpha Node" },
+        { value: "2", text: "Beta Node", selected: true },
+        { value: "3", text: "Disabled Node", disabled: true }
+    ]
+});</code></pre>
+                    </div>
+
+                    <h5 class="mt-4 mb-2">2. Single-level Grouping</h5>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-javascript">$('#mySelect').wi3bitMultiSelect({
+    grouping: { nested: true },
+    data: [
+        {
+            groupName: "Fruits",
+            groupId: "g_fruits",
+            options: [
+                { value: "f1", text: "Apple" },
+                { value: "f2", text: "Banana", selected: true }
+            ]
+        },
+        {
+            groupName: "Vegetables",
+            groupId: "g_vegetables",
+            options: [
+                { value: "v1", text: "Spinach" }
+            ]
+        }
+    ]
+});</code></pre>
+                    </div>
+
+                    <h5 class="mt-4 mb-2">3. Unlimited Depth Tree (Path Format)</h5>
+                    <p>Provide a <code>groupPath</code> (using slashes <code>/</code>) to nested folders. The plugin programmatically compiles nodes and subnodes to arbitrary depth.</p>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-javascript">$('#mySelect').wi3bitMultiSelect({
+    grouping: { 
+        nested: true,
+        collapsible: true
+    },
+    data: [
+        { 
+            value: "w1", 
+            text: "Create Users", 
+            groupPath: "Admin/Permissions/User Operations",
+            groupCollapsed: false 
+        },
+        { 
+            value: "w2", 
+            text: "Edit Profiles", 
+            groupPath: "Admin/Permissions/User Operations" 
+        },
+        { 
+            value: "r1", 
+            text: "Read Logs", 
+            groupPath: "Admin/Logs" 
+        }
+    ]
+});</code></pre>
+                    </div>
+                </section>
+
+                <!-- Events & Callbacks -->
+                <section id="events-callbacks" class="docs-section mb-5">
+                    <h2 class="border-bottom pb-2 mb-3">Events &amp; Callbacks Reference<a href="#events-callbacks" class="anchor-link">#</a></h2>
+                    <p>Expose and trigger interaction lifecycle hooks either via setting properties or native jQuery DOM event listeners.</p>
+                    
+                    <h5 class="mt-4 mb-2"><i class="fa-solid fa-table me-2 text-primary"></i>Lifecycle Event Mappings</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-docs">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Callback Option</th>
+                                    <th>jQuery DOM Event</th>
+                                    <th>Triggers When</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>onInit</code></td>
+                                    <td><code>wi3bit:init</code></td>
+                                    <td>Widget layout is rendered and ready.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onOpen</code></td>
+                                    <td><code>wi3bit:open</code></td>
+                                    <td>Dropdown panel opens.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onClose</code></td>
+                                    <td><code>wi3bit:close</code></td>
+                                    <td>Dropdown panel closes.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onChange</code></td>
+                                    <td><code>wi3bit:change</code></td>
+                                    <td>Checked option changes. Passes array of selected values.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>onDestroy</code></td>
+                                    <td><code>wi3bit:destroy</code></td>
+                                    <td>Widget layout is destroyed and replaced with native select.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h5 class="mt-4 mb-2">Usage Example</h5>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-javascript">// Method A: JavaScript callbacks parameter
+$('#mySelect').wi3bitMultiSelect({
+    callbacks: {
+        onChange: function(detail) {
+            console.log("Selected values array: ", detail.selectedValues);
+        }
+    }
+});
+
+// Method B: Standard JQuery event listeners
+$('#mySelect').on('wi3bit:change', function(event, detail) {
+    console.log("Change registered on DOM: ", detail.selectedValues);
+});</code></pre>
+                    </div>
+                </section>
+
+                <!-- API Methods -->
+                <section id="api-methods" class="docs-section mb-5">
+                    <h2 class="border-bottom pb-2 mb-3">Public API Methods<a href="#api-methods" class="anchor-link">#</a></h2>
+                    <p>Trigger actions programmatically by passing the method name string as parameters.</p>
+                    
+                    <div class="table-responsive mt-3">
+                        <table class="table table-bordered table-docs">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Method Call</th>
+                                    <th>Arguments</th>
+                                    <th>Returns</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>.wi3bitMultiSelect('val')</code></td>
+                                    <td>None</td>
+                                    <td><code>Array</code></td>
+                                    <td>Returns array of currently selected values.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.wi3bitMultiSelect('val', Array)</code></td>
+                                    <td><code>['val1', 'val2']</code></td>
+                                    <td><code>jQuery Object</code></td>
+                                    <td>Sets current selections and updates UI.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.wi3bitMultiSelect('selectAll')</code></td>
+                                    <td>None</td>
+                                    <td>None</td>
+                                    <td>Checks all non-disabled visible options.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.wi3bitMultiSelect('clear')</code></td>
+                                    <td>None</td>
+                                    <td>None</td>
+                                    <td>Unchecks all non-disabled options.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.wi3bitMultiSelect('reset')</code></td>
+                                    <td>None</td>
+                                    <td>None</td>
+                                    <td>Resets options to default state during page load.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.wi3bitMultiSelect('expandAll')</code></td>
+                                    <td>None</td>
+                                    <td>None</td>
+                                    <td>Expands all subgroups (if <code>collapsible: true</code>).</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.wi3bitMultiSelect('collapseAll')</code></td>
+                                    <td>None</td>
+                                    <td>None</td>
+                                    <td>Collapses all subgroups.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.wi3bitMultiSelect('disable')</code></td>
+                                    <td>None</td>
+                                    <td>None</td>
+                                    <td>Disables dropdown interactions and adds visual opacity.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.wi3bitMultiSelect('enable')</code></td>
+                                    <td>None</td>
+                                    <td>None</td>
+                                    <td>Enables dropdown interactions.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.wi3bitMultiSelect('refresh')</code></td>
+                                    <td>None</td>
+                                    <td>None</td>
+                                    <td>Destroys and fully rebuilds layout from original select.</td>
+                                </tr>
+                                <tr>
+                                    <td><code>.wi3bitMultiSelect('destroy')</code></td>
+                                    <td>None</td>
+                                    <td>None</td>
+                                    <td>Cleans layout wrappers, tooltips, and recovers native element display.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h5 class="mt-4 mb-2">Example Trigger Code</h5>
+                    <div class="code-container">
+                        <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-javascript">// Clear all selections
+$('#mySelect').wi3bitMultiSelect('clear');
+
+// Fetch current values
+let currentList = $('#mySelect').wi3bitMultiSelect('val');
+console.log(currentList);</code></pre>
+                    </div>
+                </section>
+
+                <footer class="text-center mt-5 pt-4 border-top text-muted small">
+                    <p class="mb-1">&copy; 2026 WI3BIT Multi-Select. Released under the MIT License.</p>
+                    <p>Designed for premium, high-performance web dashboard application systems.</p>
+                </footer>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="wi3bit-multi-select.js"></script>
+
+    <script>
+        // Copy Code Script
+        function copyCode(btn) {
+            let $code = $(btn).siblings('pre').find('code');
+            let text = $code.text();
+            
+            navigator.clipboard.writeText(text).then(function() {
+                let original = $(btn).text();
+                $(btn).text('Copied!');
+                setTimeout(function() {
+                    $(btn).text(original);
+                }, 2000);
+            });
+        }
+
+        $(document).ready(function() {
+            // Back to top behavior
+            let btnTop = $('#btnBackToTop');
+            $(window).scroll(function() {
+                if ($(window).scrollTop() > 300) {
+                    btnTop.css('display', 'flex');
+                } else {
+                    btnTop.hide();
+                }
+            });
+            btnTop.click(function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Active Sidebar Item Sync
+            $(window).scroll(function() {
+                let scrollPos = $(window).scrollTop() + 100;
+                $('.docs-section').each(function() {
+                    let id = $(this).attr('id');
+                    let top = $(this).offset().top;
+                    let bottom = top + $(this).outerHeight();
+                    
+                    if (scrollPos >= top && scrollPos <= bottom) {
+                        $('.sidebar-link').removeClass('active');
+                        $(`.sidebar-link[href="#${id}"]`).addClass('active');
+                    }
+                });
+            });
+
+            // Configurator Sample Data Setup
+            const sampleData = [
+                { value: "1", text: "Create Users", groupPath: "Administration/User Management/Write Operations" },
+                { value: "2", text: "Delete Users", groupPath: "Administration/User Management/Write Operations" },
+                { value: "3", text: "Read Users", groupPath: "Administration/User Management/Read Operations" },
+                { value: "4", text: "Edit Configurations", groupPath: "Administration/System Settings" },
+                { value: "5", text: "View Audit Logs", groupPath: "Administration/System Settings" },
+                { value: "6", text: "Publish Posts", groupPath: "Content Editors/Blog Posts" },
+                { value: "7", text: "Draft Posts", groupPath: "Content Editors/Blog Posts", selected: true },
+                { value: "8", text: "Upload Images", groupPath: "Content Editors/Media Library" },
+                { value: "9", text: "General Access", groupPath: "Miscellaneous" }
+            ];
+
+            // Rebuild Configurator Live select on options change
+            function updateConfigurator() {
+                let searchEnabled = $('#cfgSearchEnabled').is(':checked');
+                let groupingNested = $('#cfgGroupingNested').is(':checked');
+                let groupingCollapsible = $('#cfgGroupingCollapsible').is(':checked');
+                let actionsSelectAll = $('#cfgActionsSelectAll').is(':checked');
+                let actionsClearAll = $('#cfgActionsClearAll').is(':checked');
+                let actionsReset = $('#cfgActionsReset').is(':checked');
+                let actionsTotalCount = $('#cfgActionsTotalCount').is(':checked');
+                let layoutWidth = $('#cfgLayoutWidth').val().trim() || '100%';
+                let layoutDropdownHeight = $('#cfgLayoutDropdownHeight').val().trim() || '300px';
+
+                // Toggle collapsible control visibility
+                if (groupingNested) {
+                    $('#cfgCollapsibleWrapper').fadeIn(200);
+                } else {
+                    $('#cfgCollapsibleWrapper').fadeOut(200);
+                    groupingCollapsible = false;
+                }
+
+                // JS Code String Generation
+                let jsStr = `$('#mySelect').wi3bitMultiSelect({\n`;
+                jsStr += `    layout: {\n`;
+                jsStr += `        width: '${layoutWidth}',\n`;
+                jsStr += `        dropdownHeight: '${layoutDropdownHeight}'\n`;
+                jsStr += `    },\n`;
+                jsStr += `    grouping: {\n`;
+                jsStr += `        nested: ${groupingNested},\n`;
+                jsStr += `        collapsible: ${groupingCollapsible}\n`;
+                jsStr += `    },\n`;
+                jsStr += `    actions: {\n`;
+                jsStr += `        showSelectAll: ${actionsSelectAll},\n`;
+                jsStr += `        showClearAll: ${actionsClearAll},\n`;
+                jsStr += `        showReset: ${actionsReset},\n`;
+                jsStr += `        showTotalCount: ${actionsTotalCount}\n`;
+                jsStr += `    },\n`;
+                jsStr += `    search: {\n`;
+                jsStr += `        enabled: ${searchEnabled}\n`;
+                jsStr += `    }\n`;
+                jsStr += `});`;
+
+                $('#genJsCode').text(jsStr);
+
+                // HTML Code String Generation
+                let htmlStr = `&lt;select id="mySelect" multiple class="form-control"\n`;
+                htmlStr += `    data-layout-width="${layoutWidth}"\n`;
+                htmlStr += `    data-layout-dropdown-height="${layoutDropdownHeight}"\n`;
+                htmlStr += `    data-grouping-nested="${groupingNested}"\n`;
+                htmlStr += `    data-grouping-collapsible="${groupingCollapsible}"\n`;
+                htmlStr += `    data-actions-show-select-all="${actionsSelectAll}"\n`;
+                htmlStr += `    data-actions-show-clear-all="${actionsClearAll}"\n`;
+                htmlStr += `    data-actions-show-reset="${actionsReset}"\n`;
+                htmlStr += `    data-actions-show-total-count="${actionsTotalCount}"\n`;
+                htmlStr += `    data-search-enabled="${searchEnabled}"&gt;\n`;
+                htmlStr += `    &lt;!-- options --&gt;\n`;
+                htmlStr += `&lt;/select&gt;`;
+
+                $('#genHtmlCode').html(htmlStr);
+
+                // Highlight Prism syntax
+                Prism.highlightElement(document.getElementById('genJsCode'));
+                Prism.highlightElement(document.getElementById('genHtmlCode'));
+
+                // Re-initialize Live Widget dropdown
+                let $sel = $('#configuratorSelect');
+                $sel.wi3bitMultiSelect({
+                    layout: {
+                        width: '100%',
+                        dropdownHeight: layoutDropdownHeight
+                    },
+                    grouping: {
+                        nested: groupingNested,
+                        collapsible: groupingCollapsible,
+                        showExpandAll: groupingCollapsible,
+                        showCollapseAll: groupingCollapsible
+                    },
+                    actions: {
+                        showSelectAll: actionsSelectAll,
+                        showClearAll: actionsClearAll,
+                        showReset: actionsReset,
+                        showTotalCount: actionsTotalCount
+                    },
+                    search: {
+                        enabled: searchEnabled
+                    },
+                    data: sampleData
+                });
+            }
+
+            // Bind triggers
+            $('.config-trigger').on('change input', updateConfigurator);
+
+            // Initial call to trigger initial load
+            updateConfigurator();
+        });
+    </script>
+</body>
+</html>

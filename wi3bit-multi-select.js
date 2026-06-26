@@ -5,7 +5,18 @@
  * Production-ready with nested parameters, global defaults, data-attribute configuration,
  * programmatic data-loading, disabled states support, and lifecycle events/callbacks.
  */
-(function ($) {
+(function (global, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['jquery'], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        // Node/CommonJS
+        module.exports = factory(require('jquery'));
+    } else {
+        // Browser globals
+        factory(global.jQuery);
+    }
+}(typeof window !== 'undefined' ? window : this, function ($) {
     class Wi3bitMultiSelect {
         constructor(element, options) {
             this.$originalSelect = $(element);
@@ -1363,4 +1374,22 @@
             onDestroy: null
         }
     };
-})(jQuery);
+
+    // Expose constructor on prototype for extension access
+    $.fn.wi3bitMultiSelect.Constructor = Wi3bitMultiSelect;
+
+    // noConflict implementation
+    let old = $.fn.wi3bitMultiSelect;
+    $.fn.wi3bitMultiSelect.noConflict = function () {
+        $.fn.wi3bitMultiSelect = old;
+        return this;
+    };
+
+    // Auto-Init Data API
+    $(function () {
+        $('select[data-toggle="wi3bit-multi-select"]').each(function () {
+            let $select = $(this);
+            $select.wi3bitMultiSelect();
+        });
+    });
+}));
