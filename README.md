@@ -1,5 +1,4 @@
 ﻿<div align="center">
-  <img src="favicon.svg" width="80" alt="jqTreeSelect Logo" />
 
 # jqTreeSelect
 
