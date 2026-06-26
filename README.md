@@ -10,7 +10,7 @@
 ![Version](https://img.shields.io/badge/version-1.2.0-green)
 ![Production Ready](https://img.shields.io/badge/production-ready-brightgreen)
 
-[**📖 Documentation**](index.html) · [**🎮 Live Demo**](demo.html)
+[**📖 Documentation**](docs-site/index.html) · [**🎮 Live Demo**](docs-site/demo.html)
 
 </div>
 
