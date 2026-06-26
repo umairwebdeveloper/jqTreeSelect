@@ -95,12 +95,12 @@
                             <option value="1" data-group-path="Administration/User Management/Write Operations">Create Users</option>
                             <option value="2" data-group-path="Administration/User Management/Write Operations" selected>Delete Users</option>
                             <option value="3" data-group-path="Administration/User Management/Read Operations">View Users List</option>
-                            <option value="4" data-group-path="Administration/System Settings/Security">Edit Configurations</option>
+                            <option value="4" data-group-path="Administration/System Settings/Security" data-group-collapsed="true">Edit Configurations</option>
                             <option value="5" data-group-path="Administration/System Settings/Audit Log">View Audit Logs</option>
                             
-                            <option value="6" data-group-path="Content Editors/Blog Posts/Drafts">Draft Posts</option>
+                            <option value="6" data-group-path="Content Editors/Blog Posts/Drafts" data-group-collapsed="true">Draft Posts</option>
                             <option value="7" data-group-path="Content Editors/Blog Posts/Published">Publish Posts</option>
-                            <option value="8" data-group-path="Content Editors/Media Library" selected>Upload Images</option>
+                            <option value="8" data-group-path="Content Editors/Media Library" data-group-collapsed="false" selected>Upload Images</option>
                             
                             <option value="9" data-group-path="Miscellaneous">General Access</option>
                         </select>
@@ -173,7 +173,9 @@
                 showReset: true,
                 showSearch: true,
                 showTotalCount: true,
-                dropdownHeight: '300px'
+                dropdownHeight: '300px',
+                collapsibleGroups: true,
+                groupsCollapsedByDefault: false
             });
 
             // Demo script: log selected values in real-time

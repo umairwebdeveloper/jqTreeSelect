@@ -16,6 +16,8 @@
                 width: "100%",
                 height: "36px",
                 dropdownHeight: "400px",
+                collapsibleGroups: false,
+                groupsCollapsedByDefault: false,
             },
             options,
         );
@@ -181,6 +183,19 @@
                                     ".wi3bit-group-wrapper, .wi3bit-group-header, .wi3bit-subgroup-wrapper, .wi3bit-subgroup-header, .wi3bit-select-option",
                                 )
                                 .show();
+                            if (settings.collapsibleGroups) {
+                                $optionsContainer.find(".wi3bit-tree-children").each(function () {
+                                    let defCollapsed = $(this).data("default-collapsed") === true;
+                                    let $toggle = $(this).prev(".wi3bit-group-header, .wi3bit-subgroup-header").find(".wi3bit-group-toggle");
+                                    if (defCollapsed) {
+                                        $(this).hide();
+                                        $toggle.removeClass("fa-chevron-down").addClass("fa-chevron-right");
+                                    } else {
+                                        $(this).show();
+                                        $toggle.removeClass("fa-chevron-right").addClass("fa-chevron-down");
+                                    }
+                                });
+                            }
                             $notFound.hide();
                         } else {
                             $optionsContainer
@@ -200,6 +215,14 @@
                                         let $ancestors = $(this).parents(".wi3bit-subgroup-wrapper, .wi3bit-group-wrapper");
                                         $ancestors.show();
                                         $ancestors.children(".wi3bit-subgroup-header, .wi3bit-group-header").show();
+                                        if (settings.collapsibleGroups) {
+                                            let $childrenContainers = $ancestors.children(".wi3bit-tree-children");
+                                            $childrenContainers.show();
+                                            $ancestors.children(".wi3bit-group-header, .wi3bit-subgroup-header")
+                                                .find(".wi3bit-group-toggle")
+                                                .removeClass("fa-chevron-right")
+                                                .addClass("fa-chevron-down");
+                                        }
                                     }
                                 });
 
@@ -390,9 +413,16 @@
                                 fullIdPath: currentIdPath,
                                 checkboxId: "grp_" + Math.random().toString(36).substr(2, 9),
                                 children: {},
-                                options: []
+                                options: [],
+                                collapsed: settings.groupsCollapsedByDefault
                             };
                         }
+
+                        let optCollapsed = $(this).data("group-collapsed");
+                        if (optCollapsed !== undefined && optCollapsed !== null) {
+                            current.children[id].collapsed = (optCollapsed === true || optCollapsed === "true");
+                        }
+
                         current = current.children[id];
                     }
 
@@ -416,11 +446,20 @@
                 }
 
                 function renderNode(node, depth) {
+                    let isCollapsed = settings.collapsibleGroups && node.collapsed;
+                    let toggleIconClass = isCollapsed ? "fa-chevron-right" : "fa-chevron-down";
+                    let childrenStyle = isCollapsed ? 'style="display: none;"' : "";
+                    
+                    let toggleIconHtml = settings.collapsibleGroups 
+                        ? `<i class="fa-solid ${toggleIconClass} me-2 wi3bit-group-toggle wi3bit-cursor-pointer"></i>` 
+                        : "";
+
                     if (depth === 1) {
                         let $groupWrapper = $('<div class="wi3bit-group-wrapper mb-2"></div>');
                         let $groupHeader = $(`
                             <div class="dropdown-header wi3bit-group-header px-2 py-2 d-flex align-items-center">
-                                <div class="form-check m-0">
+                                ${toggleIconHtml}
+                                <div class="form-check m-0 flex-grow-1">
                                     <input class="form-check-input group-checkbox" type="checkbox" id="${node.checkboxId}" data-full-path="${node.fullIdPath}">
                                     <label class="form-check-label w-100 fw-bold" for="${node.checkboxId}" style="cursor:pointer;">${node.name}</label>
                                 </div>
@@ -428,7 +467,7 @@
                         `);
                         $groupWrapper.append($groupHeader);
 
-                        let $childrenContainer = $('<div class="wi3bit-tree-children"></div>');
+                        let $childrenContainer = $(`<div class="wi3bit-tree-children" ${childrenStyle} data-default-collapsed="${isCollapsed}"></div>`);
                         
                         for (let subId in node.children) {
                             $childrenContainer.append(renderNode(node.children[subId], depth + 1));
@@ -443,8 +482,9 @@
                     } else {
                         let $subgroupWrapper = $('<div class="wi3bit-subgroup-wrapper wi3bit-tree-node"></div>');
                         let $subgroupHeader = $(`
-                            <div class="dropdown-header wi3bit-subgroup-header px-2 py-2">
-                                <div class="form-check m-0">
+                            <div class="dropdown-header wi3bit-subgroup-header px-2 py-2 d-flex align-items-center">
+                                ${toggleIconHtml}
+                                <div class="form-check m-0 flex-grow-1">
                                     <input class="form-check-input group-checkbox" type="checkbox" id="${node.checkboxId}" data-full-path="${node.fullIdPath}">
                                     <label class="form-check-label w-100 fw-bold" for="${node.checkboxId}" style="cursor:pointer;">
                                         ${node.name}
@@ -454,7 +494,7 @@
                         `);
                         $subgroupWrapper.append($subgroupHeader);
 
-                        let $childrenContainer = $('<div class="wi3bit-tree-children"></div>');
+                        let $childrenContainer = $(`<div class="wi3bit-tree-children" ${childrenStyle} data-default-collapsed="${isCollapsed}"></div>`);
 
                         for (let subId in node.children) {
                             $childrenContainer.append(renderNode(node.children[subId], depth + 1));
@@ -741,16 +781,40 @@
             });
             $originalSelect.data("wi3bit-multi-select-event", docClickEvent);
 
+            $optionsContainer.on("click", ".wi3bit-group-toggle", function (e) {
+                e.stopPropagation();
+                let $header = $(this).closest(".wi3bit-group-header, .wi3bit-subgroup-header");
+                let $children = $header.next(".wi3bit-tree-children");
+
+                let isCollapsed = $children.is(":hidden");
+                if (isCollapsed) {
+                    $children.show();
+                    $(this).removeClass("fa-chevron-right").addClass("fa-chevron-down");
+                } else {
+                    $children.hide();
+                    $(this).removeClass("fa-chevron-down").addClass("fa-chevron-right");
+                }
+            });
+
             $optionsContainer.on(
                 "click",
                 ".wi3bit-group-header, .wi3bit-subgroup-header, .wi3bit-select-option",
                 function (e) {
                     if (
                         $(e.target).is('input[type="checkbox"]') ||
-                        $(e.target).is("label")
+                        $(e.target).is("label") ||
+                        $(e.target).hasClass("wi3bit-group-toggle")
                     ) {
                         return;
                     }
+
+                    if ($(this).hasClass("wi3bit-group-header") || $(this).hasClass("wi3bit-subgroup-header")) {
+                        if (settings.collapsibleGroups) {
+                            $(this).find(".wi3bit-group-toggle").trigger("click");
+                            return;
+                        }
+                    }
+
                     let $checkbox = $(this)
                         .find('input[type="checkbox"]')
                         .first();

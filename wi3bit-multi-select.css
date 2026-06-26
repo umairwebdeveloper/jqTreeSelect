@@ -174,3 +174,15 @@
     text-align: center;
     padding: 1.5rem 0.5rem;
 }
+
+/* Collapsible Toggle Styles */
+.wi3bit-multi-select .wi3bit-group-toggle {
+    transition: color 0.15s ease, transform 0.15s ease;
+    color: var(--bs-gray-500);
+    font-size: 0.8rem;
+    padding: 2px;
+}
+
+.wi3bit-multi-select .wi3bit-group-toggle:hover {
+    color: var(--bs-primary);
+}
