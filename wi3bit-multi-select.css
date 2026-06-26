@@ -186,3 +186,15 @@
 .wi3bit-multi-select .wi3bit-group-toggle:hover {
     color: var(--bs-primary);
 }
+
+/* Disabled state inside overflow dropdown items */
+.wi3bit-multi-select .dropdown-menu a.wi3bit-action-disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    color: var(--bs-gray-400) !important;
+    cursor: not-allowed !important;
+}
+
+.wi3bit-multi-select .dropdown-menu a.wi3bit-action-disabled i {
+    color: var(--bs-gray-400) !important;
+}

@@ -18,6 +18,8 @@
                 dropdownHeight: "400px",
                 collapsibleGroups: false,
                 groupsCollapsedByDefault: false,
+                showExpandAll: false,
+                showCollapseAll: false,
             },
             options,
         );
@@ -27,6 +29,8 @@
             let $btnAll = null;
             let $btnClear = null;
             let $btnReset = null;
+            let $btnOpenAll = null;
+            let $btnCloseAll = null;
 
             let existingWrapper = $originalSelect.data(
                 "wi3bit-multi-select-wrapper",
@@ -243,7 +247,8 @@
                     settings.showSelectAll ||
                     settings.showClearAll ||
                     settings.showReset ||
-                    settings.showTotalCount;
+                    settings.showTotalCount ||
+                    (settings.collapsibleGroups && (settings.showExpandAll || settings.showCollapseAll));
                 if (hasButtons) {
                     let $actionsWrapper = $(
                         '<div class="d-flex gap-1 align-items-center"></div>',
@@ -264,59 +269,153 @@
                         new bootstrap.Tooltip($totalBadge[0]);
                     }
 
+                    let buttons = [];
+
                     if (settings.showSelectAll) {
-                        $btnAll = $(
-                            '<span class="p-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Select All"><i class="fa-solid fa-check-double wi3bit-cursor-pointer wi3bit-text-hover-primary"></i></span>',
-                        );
-                        $actionsWrapper.append($btnAll);
-                        new bootstrap.Tooltip($btnAll[0]);
-                        $btnAll.on("click", function () {
-                            if ($btnAll.hasClass("wi3bit-action-disabled")) return;
-                            $optionsContainer
-                                .find('input[type="checkbox"]:visible')
-                                .prop("checked", true);
-                            updateUI();
-                            let tooltip = bootstrap.Tooltip.getInstance(this);
-                            if (tooltip) tooltip.hide();
+                        buttons.push({
+                            id: "selectAll",
+                            title: "Select All",
+                            icon: "fa-check-double",
+                            hoverClass: "wi3bit-text-hover-primary",
+                            action: function ($btn) {
+                                $optionsContainer
+                                    .find('input[type="checkbox"]:visible')
+                                    .prop("checked", true);
+                                updateUI();
+                            }
                         });
                     }
                     if (settings.showClearAll) {
-                        $btnClear = $(
-                            '<span class="p-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Clear All"><i class="fa-solid fa-xmark wi3bit-cursor-pointer wi3bit-text-hover-danger"></i></span>',
-                        );
-                        $actionsWrapper.append($btnClear);
-                        new bootstrap.Tooltip($btnClear[0]);
-                        $btnClear.on("click", function () {
-                            if ($btnClear.hasClass("wi3bit-action-disabled")) return;
-                            $optionsContainer
-                                .find('input[type="checkbox"]:visible')
-                                .prop("checked", false);
-                            updateUI();
+                        buttons.push({
+                            id: "clearAll",
+                            title: "Clear All",
+                            icon: "fa-xmark",
+                            hoverClass: "wi3bit-text-hover-danger",
+                            action: function ($btn) {
+                                $optionsContainer
+                                    .find('input[type="checkbox"]:visible')
+                                    .prop("checked", false);
+                                updateUI();
+                            }
+                        });
+                    }
+                    if (settings.showReset) {
+                        buttons.push({
+                            id: "reset",
+                            title: "Reset to Default",
+                            icon: "fa-arrow-rotate-left",
+                            hoverClass: "wi3bit-text-hover-primary",
+                            action: function ($btn) {
+                                $optionsContainer
+                                    .find(".select-checkbox:visible")
+                                    .each(function () {
+                                        let isDefault =
+                                            defaultSelectedValues.includes(
+                                                $(this).val(),
+                                            );
+                                        $(this).prop("checked", isDefault);
+                                    });
+                                updateUI();
+                            }
+                        });
+                    }
+                    if (settings.collapsibleGroups && settings.showExpandAll) {
+                        buttons.push({
+                            id: "openAll",
+                            title: "Expand All",
+                            icon: "fa-angles-down",
+                            hoverClass: "wi3bit-text-hover-primary",
+                            action: function ($btn) {
+                                $optionsContainer.find(".wi3bit-tree-children").show();
+                                $optionsContainer.find(".wi3bit-group-toggle").removeClass("fa-chevron-right").addClass("fa-chevron-down");
+                                updateUI();
+                            }
+                        });
+                    }
+                    if (settings.collapsibleGroups && settings.showCollapseAll) {
+                        buttons.push({
+                            id: "closeAll",
+                            title: "Collapse All",
+                            icon: "fa-angles-up",
+                            hoverClass: "wi3bit-text-hover-danger",
+                            action: function ($btn) {
+                                $optionsContainer.find(".wi3bit-tree-children").hide();
+                                $optionsContainer.find(".wi3bit-group-toggle").removeClass("fa-chevron-down").addClass("fa-chevron-right");
+                                updateUI();
+                            }
+                        });
+                    }
+
+                    function saveBtnReference(id, $elem) {
+                        if (id === "selectAll") $btnAll = $elem;
+                        else if (id === "clearAll") $btnClear = $elem;
+                        else if (id === "reset") $btnReset = $elem;
+                        else if (id === "openAll") $btnOpenAll = $elem;
+                        else if (id === "closeAll") $btnCloseAll = $elem;
+                    }
+
+                    let maxVisible = settings.showSearch ? 3 : 5;
+                    let showOverflow = buttons.length > maxVisible;
+                    let visibleCount = showOverflow ? maxVisible - 1 : buttons.length;
+
+                    // Render visible buttons directly
+                    for (let i = 0; i < visibleCount; i++) {
+                        let btn = buttons[i];
+                        let $btnHtml = $(`
+                            <span class="p-2" data-bs-toggle="tooltip" data-bs-placement="top" title="${btn.title}">
+                                <i class="fa-solid ${btn.icon} wi3bit-cursor-pointer ${btn.hoverClass}"></i>
+                            </span>
+                        `);
+                        $actionsWrapper.append($btnHtml);
+                        new bootstrap.Tooltip($btnHtml[0]);
+
+                        saveBtnReference(btn.id, $btnHtml);
+
+                        $btnHtml.on("click", function () {
+                            if ($btnHtml.hasClass("wi3bit-action-disabled")) return;
+                            btn.action($btnHtml);
                             let tooltip = bootstrap.Tooltip.getInstance(this);
                             if (tooltip) tooltip.hide();
                         });
                     }
-                    if (settings.showReset) {
-                        $btnReset = $(
-                            '<span class="p-2" data-bs-toggle="tooltip" data-bs-placement="top" title="Reset to Default"><i class="fa-solid fa-arrow-rotate-left wi3bit-cursor-pointer wi3bit-text-hover-primary"></i></span>',
-                        );
-                        $actionsWrapper.append($btnReset);
-                        new bootstrap.Tooltip($btnReset[0]);
-                        $btnReset.on("click", function () {
-                            if ($btnReset.hasClass("wi3bit-action-disabled")) return;
-                            $optionsContainer
-                                .find(".select-checkbox:visible")
-                                .each(function () {
-                                    let isDefault =
-                                        defaultSelectedValues.includes(
-                                            $(this).val(),
-                                        );
-                                    $(this).prop("checked", isDefault);
-                                });
-                            updateUI();
-                            let tooltip = bootstrap.Tooltip.getInstance(this);
-                            if (tooltip) tooltip.hide();
-                        });
+
+                    // Render overflow three-dots menu if needed
+                    if (showOverflow) {
+                        let $menuWrapper = $(`
+                            <div class="dropdown wi3bit-overflow-menu" data-bs-toggle="tooltip" data-bs-placement="top" title="More Actions">
+                                <span class="p-2 wi3bit-cursor-pointer" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-ellipsis-vertical wi3bit-text-hover-primary"></i>
+                                </span>
+                                <ul class="dropdown-menu dropdown-menu-end shadow p-1 mt-1" style="font-size: 0.85rem; min-width: 150px; z-index: 1050;">
+                                </ul>
+                            </div>
+                        `);
+                        $actionsWrapper.append($menuWrapper);
+                        new bootstrap.Tooltip($menuWrapper[0]);
+
+                        let $menuList = $menuWrapper.find(".dropdown-menu");
+
+                        for (let i = visibleCount; i < buttons.length; i++) {
+                            let btn = buttons[i];
+                            let $item = $(`
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="#">
+                                        <i class="fa-solid ${btn.icon} text-secondary" style="width: 16px;"></i>
+                                        <span>${btn.title}</span>
+                                    </a>
+                                </li>
+                            `);
+                            $menuList.append($item);
+
+                            let $btnLink = $item.find("a");
+                            saveBtnReference(btn.id, $btnLink);
+
+                            $btnLink.on("click", function (e) {
+                                e.preventDefault();
+                                if ($btnLink.hasClass("wi3bit-action-disabled")) return;
+                                btn.action($btnLink);
+                            });
+                        }
                     }
 
                     $btnGroup.append($actionsWrapper);
@@ -678,7 +777,9 @@
                     if (visibleTotal === 0 || visibleChecked === visibleTotal) {
                         $btnAll.addClass("wi3bit-action-disabled");
                         let tooltip = bootstrap.Tooltip.getInstance($btnAll[0]);
-                        if (tooltip) tooltip.hide();
+                        if (tooltip) {
+                            if (typeof tooltip.hide === "function") tooltip.hide();
+                        }
                     } else {
                         $btnAll.removeClass("wi3bit-action-disabled");
                     }
@@ -688,7 +789,9 @@
                     if (visibleTotal === 0 || visibleChecked === 0) {
                         $btnClear.addClass("wi3bit-action-disabled");
                         let tooltip = bootstrap.Tooltip.getInstance($btnClear[0]);
-                        if (tooltip) tooltip.hide();
+                        if (tooltip) {
+                            if (typeof tooltip.hide === "function") tooltip.hide();
+                        }
                     } else {
                         $btnClear.removeClass("wi3bit-action-disabled");
                     }
@@ -707,9 +810,45 @@
                     if (isResetDisabled) {
                         $btnReset.addClass("wi3bit-action-disabled");
                         let tooltip = bootstrap.Tooltip.getInstance($btnReset[0]);
-                        if (tooltip) tooltip.hide();
+                        if (tooltip) {
+                            if (typeof tooltip.hide === "function") tooltip.hide();
+                        }
                     } else {
                         $btnReset.removeClass("wi3bit-action-disabled");
+                    }
+                }
+
+                // Expand All (Open All)
+                if ($btnOpenAll) {
+                    let collapsedCount = $optionsContainer.find(".wi3bit-tree-children").filter(function() {
+                        return this.style.display === "none";
+                    }).length;
+                    
+                    if (!settings.collapsibleGroups || collapsedCount === 0) {
+                        $btnOpenAll.addClass("wi3bit-action-disabled");
+                        let tooltip = bootstrap.Tooltip.getInstance($btnOpenAll[0]);
+                        if (tooltip) {
+                            if (typeof tooltip.hide === "function") tooltip.hide();
+                        }
+                    } else {
+                        $btnOpenAll.removeClass("wi3bit-action-disabled");
+                    }
+                }
+
+                // Collapse All (Close All)
+                if ($btnCloseAll) {
+                    let expandedCount = $optionsContainer.find(".wi3bit-tree-children").filter(function() {
+                        return this.style.display !== "none";
+                    }).length;
+
+                    if (!settings.collapsibleGroups || expandedCount === 0) {
+                        $btnCloseAll.addClass("wi3bit-action-disabled");
+                        let tooltip = bootstrap.Tooltip.getInstance($btnCloseAll[0]);
+                        if (tooltip) {
+                            if (typeof tooltip.hide === "function") tooltip.hide();
+                        }
+                    } else {
+                        $btnCloseAll.removeClass("wi3bit-action-disabled");
                     }
                 }
             }
