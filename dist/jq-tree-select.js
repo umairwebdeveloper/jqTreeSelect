@@ -1230,7 +1230,7 @@
                 this.$originalSelect.val(selectedValues).trigger("change");
             }
 
-            if ($changedElem && this.settings.grouping.nested) {
+            if ($changedElem && $changedElem !== true && this.settings.grouping.nested) {
                 this.syncParents($changedElem);
             } else if (this.settings.grouping.nested) {
                 this.syncAllGroups();
