@@ -8,17 +8,44 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="wi3bit-multi-select.css">
+    <style>
+        .card {
+            border-radius: 12px;
+        }
+        .console-box {
+            background: #1e1e1e;
+            color: #00ff00;
+            font-family: monospace;
+            padding: 10px;
+            height: 150px;
+            overflow-y: auto;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        .btn-api {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+        }
+    </style>
 </head>
 <body class="bg-light p-5">
 
-    <div class="container">
-        <h2 class="mb-4">Dynamic Custom Multi-Select</h2>
+    <div class="container-fluid max-width-xxl">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="mb-1 fw-bold text-dark"><i class="fa-solid fa-list-check me-2 text-primary"></i>WI3BIT Multi-Select</h2>
+                <p class="text-muted m-0">Production-ready, highly configurable dynamic tree multi-select dropdown</p>
+            </div>
+            <span class="badge bg-success px-3 py-2 rounded-pill"><i class="fa-solid fa-circle-check me-1"></i>Production Ready (v1.2.0)</span>
+        </div>
         
         <div class="row">
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card shadow-sm border-0">
+            <!-- 1. Flat Configuration Callout -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">Simple List (No Groups)</h5>
+                        <h5 class="card-title mb-1 fw-bold">Simple List (No Groups)</h5>
+                        <p class="text-muted small mb-3">Initialized via JS options using the new nested structure.</p>
                         <select id="simpleSelect" class="form-control" multiple>
                             <option value="">Placeholder option (value="")</option>
                             <option>Placeholder option (no value attr)</option>
@@ -32,13 +59,21 @@
                 </div>
             </div>
 
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card shadow-sm border-0">
+            <!-- 2. HTML Data Attributes Callout -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">Group List (No Subgroups)</h5>
-                        <select id="groupSelect" class="form-control" multiple data-placeholder="Choose categories...">
+                        <h5 class="card-title mb-1 fw-bold">Group List (HTML Attributes Config)</h5>
+                        <p class="text-muted small mb-3">Settings parsed automatically from <code>data-actions-*</code>, <code>data-search-*</code>, etc.</p>
+                        <select id="groupSelect" class="form-control" multiple 
+                                data-placeholder="Choose categories..."
+                                data-grouping-nested="true"
+                                data-actions-show-select-all="false"
+                                data-actions-show-clear-all="false"
+                                data-actions-show-reset="false"
+                                data-search-enabled="true"
+                                data-layout-height="45px">
                             <option value="">Select fruit/vegetable (value="")</option>
-                            <option>Placeholder (no value attr)</option>
                             <option value="1" data-group-id="g_fruits" data-group-name="Fruits">Apple</option>
                             <option value="2" data-group-id="g_fruits" data-group-name="Fruits" selected>Banana</option>
                             <option value="3" data-group-id="g_fruits" data-group-name="Fruits">Orange</option>
@@ -54,11 +89,13 @@
                 </div>
             </div>
 
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card shadow-sm border-0">
+            <!-- 3. Classic Nested Tree -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">Nested Tree Group List</h5>
-                        <select id="nestedSelect" class="form-control custom-style-class" multiple data-placeholder="Assign permissions...">
+                        <h5 class="card-title mb-1 fw-bold">Nested Tree (JS Config)</h5>
+                        <p class="text-muted small mb-3">Configured with nested settings, limits height with <code>layout.dropdownHeight</code>.</p>
+                        <select id="nestedSelect" class="form-control" multiple data-placeholder="Assign permissions...">
                             <option value="">Select permissions... (value="")</option>
                             <option value="1" data-group-id="g_admin" data-group-name="Administration" data-subgroup-id="sg_users" data-subgroup-name="User Management">Create Users</option>
                             <option value="2" data-group-id="g_admin" data-group-name="Administration" data-subgroup-id="sg_users" data-subgroup-name="User Management">Delete Users</option>
@@ -75,21 +112,26 @@
                 </div>
             </div>
 
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card shadow-sm border-0">
+            <!-- 4. AJAX Dynamic Data Loading -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">AJAX Loaded List</h5>
+                        <h5 class="card-title mb-1 fw-bold">AJAX Dynamic Load (Via <code>settings.data</code>)</h5>
+                        <p class="text-muted small mb-3">Rebuilds options programmatically from standard Javascript JSON arrays.</p>
                         <div id="ajaxLoading" class="text-muted mb-2 small"><i class="fa-solid fa-spinner fa-spin me-2"></i>Loading from dummy API...</div>
                         <select id="ajaxSelect" class="form-control" multiple data-placeholder="Choose users..." style="display:none;">
                             <option value="">Loading...</option>
                         </select>
                     </div>
                 </div>
-                </div>
-            <div class="col-lg-3 col-md-6 mb-4">
-                <div class="card shadow-sm border-0">
+            </div>
+
+            <!-- 5. Unlimited Levels Tree -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
                     <div class="card-body">
-                        <h5 class="card-title mb-3">Unlimited Levels Tree</h5>
+                        <h5 class="card-title mb-1 fw-bold">Unlimited Depth Tree</h5>
+                        <p class="text-muted small mb-3">Nesting tree nodes to infinite depth via <code>data-group-path</code>.</p>
                         <select id="unlimitedSelect" class="form-control" multiple data-placeholder="Choose permissions...">
                             <option value="">Select permissions... (value="")</option>
                             <option value="1" data-group-path="Administration/User Management/Write Operations">Create Users</option>
@@ -107,33 +149,86 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 6. Native Disabled Widget & Options -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1 fw-bold">Disabled Select &amp; Disabled Options</h5>
+                        <p class="text-muted small mb-3">Dropdown is read-only. Highlights native option disabling within lists.</p>
+                        <select id="disabledSelect" class="form-control" multiple disabled data-placeholder="Cannot select...">
+                            <option value="1">Item Active 1</option>
+                            <option value="2" disabled>Item Disabled 2</option>
+                            <option value="3">Item Active 3</option>
+                            <option value="4" disabled selected>Item Disabled Selected 4</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card shadow-sm border-0">
+        <!-- Real-Time Values & API Console Playground -->
+        <div class="row mt-2">
+            <!-- Selected Values -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
                     <div class="card-body">
-                        <h5 class="card-title mb-3"><i class="fa-solid fa-code me-2 text-primary"></i>Selected Values Demo (Real-Time)</h5>
-                        <div class="d-flex flex-wrap gap-4">
-                            <div>
-                                <strong>Simple List:</strong>
-                                <span id="simpleSelectedVal" class="text-muted ms-2">None</span>
-                            </div>
-                            <div>
-                                <strong>Group List:</strong>
-                                <span id="groupSelectedVal" class="text-muted ms-2">None</span>
-                            </div>
-                            <div>
-                                <strong>Nested List:</strong>
-                                <span id="nestedSelectedVal" class="text-muted ms-2">None</span>
-                            </div>
-                            <div>
-                                <strong>AJAX List:</strong>
-                                <span id="ajaxSelectedVal" class="text-muted ms-2">None</span>
-                            </div>
-                            <div>
-                                <strong>Unlimited Tree:</strong>
-                                <span id="unlimitedSelectedVal" class="text-muted ms-2">None</span>
+                        <h5 class="card-title mb-3 fw-bold"><i class="fa-solid fa-code me-2 text-primary"></i>Real-Time Values Log</h5>
+                        <table class="table table-bordered table-striped small align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th style="width: 30%">Dropdown</th>
+                                    <th>Selected Values</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Simple List:</strong></td>
+                                    <td><span id="simpleSelectedVal" class="text-muted">None</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Group List:</strong></td>
+                                    <td><span id="groupSelectedVal" class="text-muted">None</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Nested List:</strong></td>
+                                    <td><span id="nestedSelectedVal" class="text-muted">None</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>AJAX List:</strong></td>
+                                    <td><span id="ajaxSelectedVal" class="text-muted">None</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Unlimited Tree:</strong></td>
+                                    <td><span id="unlimitedSelectedVal" class="text-muted">None</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Console & Controls -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title mb-3 fw-bold"><i class="fa-solid fa-terminal me-2 text-primary"></i>Interactive API Console (Unlimited Tree Dropdown)</h5>
+                        
+                        <div class="mb-3 d-flex flex-wrap gap-2">
+                            <button class="btn btn-outline-secondary btn-api" id="btnToggleDisable">Toggle Disable</button>
+                            <button class="btn btn-outline-primary btn-api" id="btnValSet">Set Val to [3, 8]</button>
+                            <button class="btn btn-outline-primary btn-api" id="btnValGet">Get Val</button>
+                            <button class="btn btn-outline-success btn-api" id="btnSelectAll">Select All</button>
+                            <button class="btn btn-outline-warning btn-api" id="btnClear">Clear</button>
+                            <button class="btn btn-outline-info btn-api" id="btnExpand">Expand All</button>
+                            <button class="btn btn-outline-info btn-api" id="btnCollapse">Collapse All</button>
+                            <button class="btn btn-outline-danger btn-api" id="btnDestroy">Destroy</button>
+                            <button class="btn btn-outline-dark btn-api" id="btnRebuild">Rebuild</button>
+                        </div>
+
+                        <div class="flex-grow-1">
+                            <div class="console-box" id="consoleLog">
+                                <div>[System] Console initialized. Interactive events will log here.</div>
                             </div>
                         </div>
                     </div>
@@ -148,39 +243,95 @@
 
     <script>
         $(document).ready(function () {
+            // Helper to log messages in console box
+            function logToConsole(message, type = "event") {
+                let color = type === "event" ? "#00ff00" : type === "system" ? "#00bcff" : "#ffbc00";
+                let text = `[${new Date().toLocaleTimeString()}] <span style="color: ${color};">${message}</span>`;
+                let $console = $('#consoleLog');
+                $console.append(`<div>${text}</div>`);
+                $console.scrollTop($console[0].scrollHeight);
+            }
+
+            // 1. Initialize Simple Dropdown using nested parameters
             $('#simpleSelect').wi3bitMultiSelect({ 
-                nestedGroups: false, 
-                showReset: false,
-                width: '300px'
-            });
-            $('#groupSelect').wi3bitMultiSelect({ 
-                nestedGroups: true, 
-                showSelectAll: false, 
-                showClearAll: false, 
-                showReset: false, // Test: all buttons hidden, header should not show
-                showSearch: true,
-                height: '45px'
-            });
-            $('#nestedSelect').wi3bitMultiSelect({ 
-                nestedGroups: true, 
-                showReset: true,
-                showSearch: true,
-                showTotalCount: true,
-                dropdownHeight: '200px'
-            });
-            $('#unlimitedSelect').wi3bitMultiSelect({ 
-                nestedGroups: true, 
-                showReset: true,
-                showSearch: true,
-                showTotalCount: true,
-                dropdownHeight: '300px',
-                collapsibleGroups: true,
-                groupsCollapsedByDefault: false,
-                showExpandAll: true,
-                showCollapseAll: true
+                layout: {
+                    width: '100%',
+                    placeholder: 'Select options...'
+                },
+                actions: {
+                    showReset: false
+                }
             });
 
-            // Demo script: log selected values in real-time
+            // 2. Initialize Group Dropdown (reads configurations from data-* attributes)
+            $('#groupSelect').wi3bitMultiSelect();
+
+            // 3. Initialize Nested Dropdown
+            $('#nestedSelect').wi3bitMultiSelect({ 
+                grouping: {
+                    nested: true
+                },
+                actions: {
+                    showReset: true,
+                    showTotalCount: true
+                },
+                search: {
+                    enabled: true,
+                    placeholder: 'Search permissions...'
+                },
+                layout: {
+                    dropdownHeight: '220px'
+                }
+            });
+
+            // 4. Initialize Disabled Select
+            $('#disabledSelect').wi3bitMultiSelect({
+                layout: {
+                    width: '100%'
+                }
+            });
+
+            // 5. Initialize Unlimited Level Tree and bind Callbacks
+            $('#unlimitedSelect').wi3bitMultiSelect({ 
+                grouping: {
+                    nested: true, 
+                    collapsible: true,
+                    collapsedByDefault: false,
+                    showExpandAll: true,
+                    showCollapseAll: true
+                },
+                actions: {
+                    showReset: true,
+                    showTotalCount: true,
+                    showSelectAll: true,
+                    showClearAll: true
+                },
+                search: {
+                    enabled: true
+                },
+                layout: {
+                    dropdownHeight: '300px'
+                },
+                callbacks: {
+                    onInit: function(instance) {
+                        logToConsole("onInit callback fired for #unlimitedSelect", "system");
+                    },
+                    onOpen: function(instance) {
+                        logToConsole("onOpen callback fired: Dropdown opened", "event");
+                    },
+                    onClose: function(instance) {
+                        logToConsole("onClose callback fired: Dropdown closed", "event");
+                    },
+                    onChange: function(detail) {
+                        logToConsole(`onChange callback fired. Selected: [${detail.selectedValues.join(', ')}]`, "event");
+                    },
+                    onDestroy: function(instance) {
+                        logToConsole("onDestroy callback fired: Widget destroyed", "system");
+                    }
+                }
+            });
+
+            // Real-Time Value Logging Handler
             function logValues(selectId, logId) {
                 let val = $(selectId).val() || [];
                 $(logId).text(val.length > 0 ? JSON.stringify(val) : 'None');
@@ -194,35 +345,121 @@
                 logValues('#unlimitedSelect', '#unlimitedSelectedVal');
             });
 
-            // Fetch users from dummy API (JSONPlaceholder) via jQuery AJAX
+            // API Console Playground Button Events
+            $('#btnToggleDisable').on('click', function() {
+                let instance = $('#unlimitedSelect').data('wi3bit-multi-select');
+                if (instance) {
+                    if (instance.isDisabled) {
+                        $('#unlimitedSelect').wi3bitMultiSelect('enable');
+                        logToConsole("API call: enabled widget", "system");
+                    } else {
+                        $('#unlimitedSelect').wi3bitMultiSelect('disable');
+                        logToConsole("API call: disabled widget", "system");
+                    }
+                }
+            });
+
+            $('#btnValSet').on('click', function() {
+                $('#unlimitedSelect').wi3bitMultiSelect('val', ["3", "8"]);
+                logToConsole("API call: val(['3', '8']) set successfully", "system");
+            });
+
+            $('#btnValGet').on('click', function() {
+                let val = $('#unlimitedSelect').wi3bitMultiSelect('val');
+                logToConsole(`API call: val() returned [${val.join(', ')}]`, "system");
+            });
+
+            $('#btnSelectAll').on('click', function() {
+                $('#unlimitedSelect').wi3bitMultiSelect('selectAll');
+                logToConsole("API call: selectAll() executed", "system");
+            });
+
+            $('#btnClear').on('click', function() {
+                $('#unlimitedSelect').wi3bitMultiSelect('clear');
+                logToConsole("API call: clear() executed", "system");
+            });
+
+            $('#btnExpand').on('click', function() {
+                $('#unlimitedSelect').wi3bitMultiSelect('expandAll');
+                logToConsole("API call: expandAll() executed", "system");
+            });
+
+            $('#btnCollapse').on('click', function() {
+                $('#unlimitedSelect').wi3bitMultiSelect('collapseAll');
+                logToConsole("API call: collapseAll() executed", "system");
+            });
+
+            $('#btnDestroy').on('click', function() {
+                $('#unlimitedSelect').wi3bitMultiSelect('destroy');
+                logToConsole("API call: destroy() executed", "system");
+            });
+
+            $('#btnRebuild').on('click', function() {
+                // Rebuild with custom settings
+                $('#unlimitedSelect').wi3bitMultiSelect({
+                    grouping: {
+                        nested: true, 
+                        collapsible: true,
+                        showExpandAll: true,
+                        showCollapseAll: true
+                    },
+                    actions: {
+                        showReset: true,
+                        showTotalCount: true
+                    },
+                    search: {
+                        enabled: true
+                    },
+                    callbacks: {
+                        onChange: function(detail) {
+                            logToConsole(`onChange (rebuilt): [${detail.selectedValues.join(', ')}]`, "event");
+                        }
+                    }
+                });
+                logToConsole("API call: widget rebuilt.", "system");
+            });
+
+            // Fetch users from dummy API (JSONPlaceholder) via jQuery AJAX and load via `settings.data`
             $.ajax({
                 url: 'https://jsonplaceholder.typicode.com/users',
                 method: 'GET',
                 dataType: 'json'
             }).done(function (data) {
                 let $ajaxSelect = $('#ajaxSelect');
-                $ajaxSelect.empty(); // clear loading option
                 
-                // Add placeholder option with empty value to test the filtering functionality
-                $ajaxSelect.append('<option value="">Select a user (placeholder)...</option>');
-
-                // Populate with users grouped by their company name
-                data.forEach(function (user) {
-                    $ajaxSelect.append(`
-                        <option value="${user.id}" 
-                                data-group-id="company_${user.company.name.replace(/[^a-zA-Z0-9_-]/g, '_')}" 
-                                data-group-name="${user.company.name}">
-                            ${user.name} (${user.email})
-                        </option>
-                    `);
+                // Formulate data source to pass directly as settings.data parameter
+                let optionsData = data.map(function (user) {
+                    return {
+                        value: user.id.toString(),
+                        text: `${user.name} (${user.email})`,
+                        groupName: user.company.name,
+                        groupId: `company_${user.company.name.replace(/[^a-zA-Z0-9_-]/g, '_')}`
+                    };
                 });
 
-                // Initialize the custom multi-select
+                // Add an active/disabled test option at the end
+                optionsData.push({
+                    value: "disabled_test",
+                    text: "Disabled System Account (ReadOnly)",
+                    groupName: "System Administrator",
+                    groupId: "grp_system_admin",
+                    disabled: true
+                });
+
+                // Initialize the custom multi-select via the single data property parameter
                 $ajaxSelect.wi3bitMultiSelect({
-                    nestedGroups: true,
-                    showSearch: true,
-                    showReset: true,
-                    showTotalCount: true
+                    grouping: {
+                        nested: true
+                    },
+                    search: {
+                        enabled: true,
+                        placeholder: "Filter users..."
+                    },
+                    actions: {
+                        showReset: true,
+                        showTotalCount: true
+                    },
+                    data: optionsData
                 });
 
                 $('#ajaxLoading').hide();

@@ -1,9 +1,24 @@
 /* --- WI3BIT Custom Multi-Select Dropdown Styles --- */
 
+.wi3bit-multi-select {
+    --wi3bit-primary: #0d6efd;
+    --wi3bit-primary-hover: #0b5ed7;
+    --wi3bit-danger: #dc3545;
+    --wi3bit-danger-hover: #bb2d3b;
+    --wi3bit-border-color: var(--bs-border-color, #dee2e6);
+    --wi3bit-bg: var(--bs-body-bg, #fff);
+    --wi3bit-text: var(--bs-body-color, #212529);
+    --wi3bit-text-muted: var(--bs-secondary-color, #6c757d);
+    --wi3bit-hover-bg: var(--bs-gray-100, #f8f9fa);
+    --wi3bit-border-radius: var(--bs-border-radius, 0.375rem);
+    
+    position: relative;
+}
+
 .wi3bit-multi-select .wi3bit-select-display {
     position: relative !important;
     min-height: 36px;
-    width: 100%; /* Changed to 100% to fill container, max-width handled by wrapper */
+    width: 100%;
     cursor: pointer;
     padding-right: 35px !important;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -11,6 +26,10 @@
     align-items: center;
     flex-wrap: nowrap;
     background-image: none !important;
+    background-color: var(--wi3bit-bg);
+    color: var(--wi3bit-text);
+    border: 1px solid var(--wi3bit-border-color);
+    border-radius: var(--wi3bit-border-radius);
 }
 
 .wi3bit-multi-select .wi3bit-select-display:hover {
@@ -24,19 +43,20 @@
     text-overflow: ellipsis;
     margin-right: 10px;
     font-size: 0.9rem;
-    color: #212529;
+    color: var(--wi3bit-text);
 }
 
 .wi3bit-multi-select .wi3bit-select-badge {
     flex-shrink: 0;
     font-size: 0.7rem;
+    background-color: var(--wi3bit-primary) !important;
 }
 
 .wi3bit-multi-select .wi3bit-select-chevron {
     right: 12px;
     top: 50%;
     transform: translateY(-50%);
-    color: #adb5bd;
+    color: var(--wi3bit-text-muted);
     pointer-events: none;
 }
 
@@ -44,17 +64,20 @@
 .wi3bit-multi-select .dropdown-menu {
     max-height: 400px;
     overflow-y: auto;
-    border-radius: 0.5rem;
-    min-width: 200px; /* Ensure a decent minimum width */
+    border-radius: var(--wi3bit-border-radius);
+    min-width: 200px;
+    background-color: var(--wi3bit-bg);
+    border: 1px solid var(--wi3bit-border-color);
 }
 
 .wi3bit-multi-select .wi3bit-action-header {
     position: sticky;
     top: -0.5rem;
-    background-color: var(--bs-body-bg);
+    background-color: var(--wi3bit-bg);
     z-index: 10;
     padding-top: 0.5rem;
     margin-top: -0.5rem;
+    border-bottom: 1px solid var(--wi3bit-border-color) !important;
 }
 
 .wi3bit-cursor-pointer {
@@ -62,11 +85,11 @@
 }
 
 .wi3bit-text-hover-primary:hover {
-    color: var(--bs-primary);
+    color: var(--wi3bit-primary);
 }
 
 .wi3bit-text-hover-danger:hover {
-    color: var(--bs-danger);
+    color: var(--wi3bit-danger);
 }
 
 .wi3bit-multi-select .wi3bit-action-disabled {
@@ -75,11 +98,11 @@
 
 .wi3bit-multi-select .wi3bit-action-disabled i {
     cursor: not-allowed !important;
-    color: var(--bs-gray-400) !important;
+    color: var(--wi3bit-text-muted) !important;
 }
 
 .wi3bit-multi-select .wi3bit-action-disabled i:hover {
-    color: var(--bs-gray-400) !important;
+    color: var(--wi3bit-text-muted) !important;
 }
 
 /* --- Tree Hierarchy Styles --- */
@@ -94,12 +117,12 @@
 .wi3bit-multi-select .wi3bit-select-option:hover,
 .wi3bit-multi-select .wi3bit-group-header:hover,
 .wi3bit-multi-select .wi3bit-subgroup-header:hover {
-    background-color: var(--bs-gray-100);
+    background-color: var(--wi3bit-hover-bg);
 }
 
 .wi3bit-multi-select .wi3bit-group-wrapper:not(:first-child) {
     margin-top: 0.4rem;
-    border-top: 1px solid var(--bs-gray-200);
+    border-top: 1px solid var(--wi3bit-border-color);
     padding-top: 0.4rem;
 }
 
@@ -111,7 +134,7 @@
 .wi3bit-multi-select .wi3bit-group-header label {
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--bs-gray-800);
+    color: var(--wi3bit-text);
 }
 
 .wi3bit-multi-select .wi3bit-subgroup-header {
@@ -121,14 +144,14 @@
 .wi3bit-multi-select .wi3bit-subgroup-header label {
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--bs-gray-700);
+    color: var(--wi3bit-text);
 }
 
 /* The lines mapping the tree */
 .wi3bit-multi-select .wi3bit-tree-children {
     margin-left: 0.8rem;
     padding-left: 0.5rem;
-    border-left: 1px dashed var(--bs-gray-300);
+    border-left: 1px dashed var(--wi3bit-border-color);
     position: relative;
 }
 
@@ -140,10 +163,10 @@
 .wi3bit-multi-select .wi3bit-tree-node::before {
     content: "";
     position: absolute;
-    top: 15px; /* Aligns with the middle of the checkbox/text */
+    top: 15px;
     left: -0.5rem;
     width: 0.5rem;
-    border-top: 1px dashed var(--bs-gray-300);
+    border-top: 1px dashed var(--wi3bit-border-color);
 }
 
 /* Flat Grouping (Groups but no Subgroups) */
@@ -164,13 +187,13 @@
 
 .wi3bit-multi-select .wi3bit-search-input:focus {
     box-shadow: none;
-    border-color: var(--bs-primary);
+    border-color: var(--wi3bit-primary);
 }
 
 /* Not Found Alert Styles */
 .wi3bit-multi-select .wi3bit-not-found {
     font-size: 0.85rem;
-    color: var(--bs-gray-500);
+    color: var(--wi3bit-text-muted);
     text-align: center;
     padding: 1.5rem 0.5rem;
 }
@@ -178,23 +201,47 @@
 /* Collapsible Toggle Styles */
 .wi3bit-multi-select .wi3bit-group-toggle {
     transition: color 0.15s ease, transform 0.15s ease;
-    color: var(--bs-gray-500);
+    color: var(--wi3bit-text-muted);
     font-size: 0.8rem;
     padding: 2px;
 }
 
 .wi3bit-multi-select .wi3bit-group-toggle:hover {
-    color: var(--bs-primary);
+    color: var(--wi3bit-primary);
 }
 
 /* Disabled state inside overflow dropdown items */
 .wi3bit-multi-select .dropdown-menu a.wi3bit-action-disabled {
     pointer-events: none;
     opacity: 0.5;
-    color: var(--bs-gray-400) !important;
+    color: var(--wi3bit-text-muted) !important;
     cursor: not-allowed !important;
 }
 
 .wi3bit-multi-select .dropdown-menu a.wi3bit-action-disabled i {
-    color: var(--bs-gray-400) !important;
+    color: var(--wi3bit-text-muted) !important;
+}
+
+/* --- Disabled State Styles --- */
+.wi3bit-multi-select.wi3bit-disabled {
+    pointer-events: none;
+}
+
+.wi3bit-multi-select .wi3bit-select-display.disabled {
+    background-color: var(--bs-secondary-bg, #e9ecef) !important;
+    opacity: 0.65;
+    cursor: not-allowed !important;
+    border-color: var(--wi3bit-border-color) !important;
+    color: var(--wi3bit-text-muted) !important;
+    box-shadow: none !important;
+}
+
+.wi3bit-multi-select .wi3bit-option-disabled {
+    opacity: 0.5;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
+.wi3bit-multi-select .wi3bit-option-disabled label {
+    cursor: not-allowed !important;
 }
